@@ -4,6 +4,8 @@ namespace Cryptopia;
 
 class Api extends Exchange
 {
+    private $privateKey;
+    private $publicKey;
 
     public function __construct($priv, $pub)
     {
