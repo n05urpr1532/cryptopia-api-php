@@ -1,5 +1,5 @@
 {
-  "name": "cryptopia-api-php",
+  "name": "toooni/cryptopia-api-php",
   "description": "cryptopia api",
   "license": "MIT",
   "require": {
