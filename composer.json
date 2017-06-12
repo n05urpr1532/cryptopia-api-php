@@ -1,0 +1,17 @@
+{
+  "name": "cryptopia-api-php",
+  "description": "cryptopia api",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.0",
+    "ext-curl": "*"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Cryptopia\\": "src"
+    }
+  },
+  "homepage": "https://github.com/toooni/cryptopia-api-php"
+}

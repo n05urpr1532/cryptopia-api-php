@@ -1,5 +1,5 @@
 <?php
-include 'cryptopiaAPI.php';
+include 'src/Api.php';
 
 //---------------------- Sample Code for cryptopia-api-php ----------------------
 // Sample code for each function of the api wrapper.
@@ -19,7 +19,7 @@ $API_SECRET = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 
 try {
    // create a new instance of the API Wrapper
-   $ct = New Cryptopia($API_SECRET, $API_KEY); 
+   $ct = New Cryptopia($API_SECRET, $API_KEY);
 
 
    //---------------------------------------------------------------------------

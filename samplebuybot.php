@@ -1,5 +1,5 @@
 <?php
-include 'cryptopiaAPI.php';
+include 'src/Api.php';
 
 //---------------------- SAMPLE BUY BOT
 
