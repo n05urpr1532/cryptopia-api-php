@@ -11,19 +11,6 @@ class Api extends Exchange
     {
         $this->privateKey = $priv;
         $this->publicKey = $pub;
-
-        $result = json_decode($this->apiCall("GetBalance", ['Currency' => 'BTC']), true); // There is a bug in the API if you send no parameters it will return Success:true Error: Market not found.
-        // Array
-        // (
-        //    [Success] => 1
-        //    [Message] =>
-        //    [Data] =>
-        //    [Error] => Market not found.
-        // )
-        // print_r($result);
-        if ($result['Success'] != "true") {
-            throw new \Exception("Can't Connect to Cryptopia, Error: " . $result['Error']);
-        }
     }
 
     private function apiCall($method, array $req = [])
@@ -79,6 +66,25 @@ class Api extends Exchange
             // creates associative array of key: StandardSymbol (i.e. BTCUSD) value: ExchangeSymbol (i.e. btc_usd)
             $this->symbols[$this->makeStandardSymbol($pair["Label"])] = $pair["Id"];
         }
+    }
+
+    public function getMarkets(string $baseMarket = null)
+    {
+        $parameters = [];
+
+        if ($baseMarket !== null) {
+            $parameters['baseMarket'] = $baseMarket;
+        }
+
+        $result = json_decode($this->apiCall("GetMarkets", $parameters), true);
+
+        if ($result['Success'] == "true") {
+            $data = $result['Data'];
+        } else {
+            throw new \Exception("Can't get markets, Error: " . $result['Error']);
+        }
+
+        return $data;
     }
 
     public function updatePrices()
@@ -154,6 +160,21 @@ class Api extends Exchange
         }
     }
 
+    public function getOpenOrders($tradePairId = null) : ?array
+    {
+        $parameters = [];
+        $parameters['TradePairId'] = (string) $tradePairId;
+
+
+        $result = json_decode($this->apiCall("GetOpenOrders", $parameters), true);
+
+        if ($result['Success'] == "true") {
+            return $result['Data'];
+        } else {
+            throw new \Exception("Can't Cancel All Orders, Error: " . $result['Error']);
+        }
+    }
+
     public function activeOrders($symbol = "")
     {
         if ($symbol == "") {
@@ -204,9 +225,9 @@ class Api extends Exchange
         return $this->placeOrder($symbol, $amount, $price, 'Buy');
     }
 
-    public function placeOrder($symbol, $amount, $price, $side)
+    public function placeOrder($tradePairId, $amount, $price, $side)
     {
-        $result = $this->apiCall("SubmitTrade", ['Type' => $side, 'TradePairId' => $this->getExchangeSymbol($symbol),
+        $result = $this->apiCall("SubmitTrade", ['Type' => $side, 'TradePairId' => $tradePairId,
             'Rate' => number_format((float)$price, 8, '.', ''), 'Amount' => number_format((float)$amount, 8, '.', '')]);
         $result = json_decode($result, true);
         if ($result['Success'] == "true") {

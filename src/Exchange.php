@@ -47,9 +47,6 @@ abstract class Exchange
      * @var array of arrays
      */
     protected $balances = []; //Trading Pairs
-private $privateKey = '';
-private $publicKey = '';
-
 
     // ----- Get and Set Functions -----
 
