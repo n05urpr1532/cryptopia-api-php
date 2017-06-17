@@ -68,6 +68,18 @@ class Api extends Exchange
         }
     }
 
+    public function getTradeHistory($tradePairId)
+    {
+        $result = json_decode($this->apiCall("GetTradeHistory", ['TradePairId' => $tradePairId]), true);
+
+        if ($result['Success'] == "true") {
+            return $result['Data'];
+        } else {
+            throw new \Exception("Can't get trade history, Error: " . $result['Error']);
+        }
+    }
+
+
     public function getMarkets(string $baseMarket = null)
     {
         $parameters = [];
