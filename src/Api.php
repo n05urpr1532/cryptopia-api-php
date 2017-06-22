@@ -49,6 +49,10 @@ class Api extends Exchange
         $res = curl_exec($ch);
         if ($res === false) throw new \Exception('Could not get reply: ' . curl_error($ch));
 
+        if ($res['Success'] !== 'true') {
+            throw new \Exception(curl_error($ch), ['method' => $method, 'parameters' => $req]);
+        }
+
         return $res;
     }
 
@@ -119,16 +123,24 @@ class Api extends Exchange
 
     // @todo add setBalance
 
-    Public function getBalance()
+    /**
+     * "CurrencyId" => 508
+     * "Symbol" => "ATMS"
+     * "Total" => 998.00399202
+     * "Available" => 0.0
+     * "Unconfirmed" => 0.0
+     * "HeldForTrades" => 998.00399202
+     * "PendingWithdraw" => 0.0
+     * "Address" => null
+     * "Status" => "OK"
+     * "StatusMessage" => null
+     * "BaseAddress" => null
+     */
+    public function getBalance() : array
     {
         $result = $this->apiCall("GetBalance", ['Currency' => ""]); // "" for All currency balances
         $result = json_decode($result, true);
-        if ($result['Success'] == "true") {
-            // @todo ADD CODE TO REFORMAT Array to standard
-            return $result['Data'];
-        } else {
-            throw new \Exception("Can't get balances, Error: " . $result['Error']);
-        }
+        return $result['Data'];
     }
 
     Public function getCurrencyBalance($currency)
