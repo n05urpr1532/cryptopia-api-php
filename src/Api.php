@@ -137,10 +137,10 @@ class Api extends Exchange
         $result = $this->apiCall("GetBalance", ['Currency' => ""]); // "" for All currency balances
         $result = json_decode($result, true);
 
-        if ($result['Success'] !== 'true') {
-            throw new \Exception("Can't get balance, Error: " . $result['Error']);
+        if (!$result['Success']) {
+            throw new \Exception("Can't get balances, Error: " . $result['Error']);
         }
-        
+
         return $result['Data'];
     }
 
