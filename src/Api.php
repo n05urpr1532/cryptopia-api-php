@@ -49,10 +49,6 @@ class Api extends Exchange
         $res = curl_exec($ch);
         if ($res === false) throw new \Exception('Could not get reply: ' . curl_error($ch));
 
-        if ($res['Success'] !== 'true') {
-            throw new \Exception(curl_error($ch), ['method' => $method, 'parameters' => $req]);
-        }
-
         return $res;
     }
 
@@ -140,6 +136,11 @@ class Api extends Exchange
     {
         $result = $this->apiCall("GetBalance", ['Currency' => ""]); // "" for All currency balances
         $result = json_decode($result, true);
+
+        if ($result['Success'] !== 'true') {
+            throw new \Exception("Can't get balance, Error: " . $result['Error']);
+        }
+        
         return $result['Data'];
     }
 
