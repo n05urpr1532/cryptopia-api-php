@@ -2,7 +2,7 @@
 
 namespace Cryptopia;
 
-class Api extends Exchange
+class Api
 {
     private $privateKey;
     private $publicKey;
@@ -52,31 +52,26 @@ class Api extends Exchange
         return $res;
     }
 
-    // Some API calls require TradePairId rather than the TradePair so this should store the TradePairId
-    public function setSymbols()
-    {
-        $result = json_decode($this->apiCall("GetTradePairs", []), true);
-
-        if ($result['Success'] == "true") {
-            $json = $result['Data'];
-        } else {
-            throw new \Exception("Can't get symbols, Error: " . $result['Error']);
-        }
-        foreach ($json as $pair) {
-            // creates associative array of key: StandardSymbol (i.e. BTCUSD) value: ExchangeSymbol (i.e. btc_usd)
-            $this->symbols[$this->makeStandardSymbol($pair["Label"])] = $pair["Id"];
-        }
-    }
-
-    public function getTradeHistory($tradePairId)
+    /**
+     * "TradeId": 23467,
+     * "TradePairId": 100,
+     * "Market": "DOT/BTC",
+     * "Type": "Buy",
+     * "Rate": 0.00000034,
+     * "Amount": 145.98000000,
+     * "Total": "0.00004963",
+     * "Fee": "0.98760000",
+     * "TimeStamp":"2014-12-07T20:04:05.3947572"
+     */
+    public function getTradeHistory($tradePairId) : array
     {
         $result = json_decode($this->apiCall("GetTradeHistory", ['TradePairId' => $tradePairId]), true);
 
-        if ($result['Success'] == "true") {
-            return $result['Data'];
-        } else {
+        if (!$result['Success']) {
             throw new \Exception("Can't get trade history, Error: " . $result['Error']);
         }
+
+        return $result['Data'];
     }
 
 
@@ -98,7 +93,7 @@ class Api extends Exchange
      * "BuyBaseVolume" => 1.96602119
      * "SellBaseVolume" => 633837063.42196
      */
-    public function getMarkets(string $baseMarket = null)
+    public function getMarkets(string $baseMarket = null) : array
     {
         $parameters = [];
 
@@ -171,32 +166,22 @@ class Api extends Exchange
         }
     }
 
-    // currency pair $symbol should be in standard Format not exchange format
-
-    public function permissions()
-    {
-
-    }
-
-    public function cancelOrder($id)
+    public function cancelOrder($id) : void
     {
         $result = $this->apiCall("CancelTrade", ['Type' => "Trade", 'OrderId' => $id]);
         $result = json_decode($result, true);
-        if ($result['Success'] == "true") {
-            echo "Orders Canceled: " . implode(", ", $result['Data']) . "\n";
-        } else {
+
+        if (!$result['Success']) {
             throw new \Exception("Can't Cancel Order # $id, Error: " . $result['Error']);
         }
     }
 
-    public function cancelAll()
+    public function cancelAll() : void
     {
-        if (!$this->activeOrders()) return false;  // "No open orders to cancel.\n"
         $result = $this->apiCall("CancelTrade", ['Type' => "All"]);
         $result = json_decode($result, true);
-        if ($result['Success'] == "true") {
-            return "Orders Canceled: " . implode(", ", $result['Data']) . "\n";
-        } else {
+
+        if (!$result['Success']) {
             throw new \Exception("Can't Cancel All Orders, Error: " . $result['Error']);
         }
     }
