@@ -267,8 +267,7 @@ class Api
             'Rate' => number_format((float)$price, 8, '.', ''), 'Amount' => number_format((float)$amount, 8, '.', '')]);
         $result = json_decode($result, true);
         if ($result['Success'] == "true") {
-            return "Order Placed. OrderId:" . $result['Data']['OrderId'] .
-                " FilledOrders: " . implode(", ", $result['Data']['FilledOrders']) . "\n";
+            return (int) $result['Data']['OrderId'];
         } else {
             throw new \Exception("Can't Place Order, Error: " . $result['Error']); //*** die instead of echo
         }
