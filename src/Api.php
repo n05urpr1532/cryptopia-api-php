@@ -269,8 +269,7 @@ class Api
         $result = json_decode($result, true);
 
         if ($result['Success'] == "true") {
-            return $result['Data']['OrderId'];
-
+            return (int) $result['Data']['OrderId'];
         } else {
             throw new \Exception("Can't Place Order, Error: " . $result['Error']); //*** die instead of echo
         }
