@@ -65,7 +65,10 @@ class Api
      */
     public function getTradeHistory($tradePairId) : array
     {
-        $result = json_decode($this->apiCall("GetTradeHistory", ['TradePairId' => $tradePairId]), true);
+        $result = json_decode($this->apiCall("GetTradeHistory", [
+            'TradePairId' => $tradePairId,
+            'Count' => 1000,
+        ]), true);
 
         if (!$result['Success']) {
             throw new \Exception("Can't get trade history, Error: " . $result['Error']);
