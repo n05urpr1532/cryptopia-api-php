@@ -201,6 +201,7 @@ class Api
     {
         $parameters = [];
         $parameters['TradePairId'] = (string) $tradePairId;
+        $parameters['Count'] = 1000;
 
         $result = json_decode($this->apiCall("GetOpenOrders", $parameters), true);
 
@@ -266,9 +267,10 @@ class Api
         $result = $this->apiCall("SubmitTrade", ['Type' => $side, 'TradePairId' => $tradePairId,
             'Rate' => number_format((float)$price, 8, '.', ''), 'Amount' => number_format((float)$amount, 8, '.', '')]);
         $result = json_decode($result, true);
+
         if ($result['Success'] == "true") {
-            return "Order Placed. OrderId:" . $result['Data']['OrderId'] .
-                " FilledOrders: " . implode(", ", $result['Data']['FilledOrders']) . "\n";
+            return $result['Data']['OrderId'];
+
         } else {
             throw new \Exception("Can't Place Order, Error: " . $result['Error']); //*** die instead of echo
         }
@@ -281,7 +283,7 @@ class Api
 
     public function marketOrderbook($symbol)
     {
-        $mktOrders = json_decode($this->apiCall("GetMarketOrders", ['TradePairId' => $this->getExchangeSymbol($symbol)]), true);
+        $mktOrders = json_decode($this->apiCall("GetMarketOrders", ['TradePairId' => $symbol]), true);
         unset($orders);
         if ($mktOrders['Success'] == "true" && $mktOrders['Error'] == "") {
             //print_r($mktOrders);
