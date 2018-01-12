@@ -96,6 +96,39 @@ class Api
      * "BuyBaseVolume" => 1.96602119
      * "SellBaseVolume" => 633837063.42196
      */
+    public function getMarket(string $tradePairId) : array
+    {
+        $parameters = [];
+        $parameters['TradePairId'] = $tradePairId;
+
+        $result = json_decode($this->apiCall("GetMarket", $parameters), true);
+
+        if (!$result['Success']) {
+            throw new \Exception("Can't get markets, Error: " . $result['Error']);
+        }
+
+        return $result['Data'];
+    }
+
+
+    /**
+     * "TradePairId" => 1261
+     * "Label" => "$$$/BTC"
+     * "AskPrice" => 2.7E-7
+     * "BidPrice" => 2.5E-7
+     * "Low" => 2.3E-7
+     * "High" => 2.9E-7
+     * "Volume" => 810030.12268635
+     * "LastPrice" => 2.5E-7
+     * "BuyVolume" => 101136786.26353
+     * "SellVolume" => 20763557.173173
+     * "Change" => 4.17
+     * "Open" => 2.4E-7
+     * "Close" => 2.5E-7
+     * "BaseVolume" => 0.2093689
+     * "BuyBaseVolume" => 1.96602119
+     * "SellBaseVolume" => 633837063.42196
+     */
     public function getMarkets(string $baseMarket = null) : array
     {
         $parameters = [];
